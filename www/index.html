@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
+    <link rel="stylesheet" type="text/css" href="css/index.css" />
+    <title>Hello World</title>
+</head>
+<body>
+<div class="app" >
+    <img src="img/img1.jpg">
+    <h1>Sweet Pea's</h1>
+
+    <div id="deviceready" class="blink">
+        <p class="event listening">Connecting to Device</p>
+        <p class="event received">EAT BBQ!!!</p>
+    </div>
+
+    <p id="geolocation" style="font-size: 14px; font-weight: bold;color:#4B946A">Finding geolocation...</p>
+    <p id="error" style="font-size: 14px; font-weight: bold;color:#ffbbbb"></p>
+
+</div>
+
+<script type="text/javascript" src="cordova.js"></script>
+<script type="text/javascript" src="js/index.js"></script>
+<script type="text/javascript">
+
+    app.initialize();
+
+    Number.prototype.toRad = function() {
+        return this * (Math.PI / 180);
+    };
+
+    var watchID = null;
+    var element = document.getElementById('geolocation');
+    var errorElement = document.getElementById('error');
+    // Wait for device API libraries to load
+    //
+    document.addEventListener("deviceready", onDeviceReady, false);
+
+    // device APIs are available
+    //
+    function onDeviceReady() {
+        var options = { timeout: 5000, enableHighAccuracy: false};
+        watchID = navigator.geolocation.watchPosition(onSuccess, onError, options);
+    }
+
+    // onSuccess Geolocation
+    //
+    function onSuccess(position) {
+
+        errorElement = "";
+        var metersPerSecondToMilesPerHour= 2.23694;
+
+        element.innerHTML = 'Latitude: '           + position.coords.latitude              + '<br />' +
+                'Longitude: '          + position.coords.longitude             + '<br />' +
+            /*'Altitude: '           + position.coords.altitude              + '<br />' +
+             'Accuracy: '           + position.coords.accuracy              + '<br />' +
+             'Altitude Accuracy: '  + position.coords.altitudeAccuracy      + '<br />' +*/
+                'Heading: '            + position.coords.heading               + '<br />' +
+                'Speed: '              + position.coords.speed * metersPerSecondToMilesPerHour + ' MPH <br />' +
+                //'Timestamp: '          + position.timestamp                    + '<br />' +
+                'Distance to Sweet Peas:' +  distanceToSweetPeas(position)     + ' miles <br/>';
+    }
+
+    function distanceToSweetPeas (position) {
+        //Sweet P's
+        //Latitude: 35.87371
+        // Long: -83.94306
+        var sweetLat=   35.87371;
+        var sweetLong= -83.94306;
+
+        var R = 6371; // km
+        var dLat = (position.coords.latitude - sweetLat).toRad();//(lat2-lat1).toRad();
+        var dLon = (position.coords.longitude- sweetLong).toRad();
+        var lat1 = sweetLat.toRad();
+        var lat2 = position.coords.latitude.toRad();
+
+        var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                Math.sin(dLon/2) * Math.sin(dLon/2) * Math.cos(lat1) * Math.cos(lat2);
+        var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        var distanceInMiles = new Number (R * c * 0.621371);
+
+        return distanceInMiles.toPrecision(4) ;
+    }
+
+    // onError Callback receives a PositionError object
+    //
+    function onError(error) {
+        errorElement.innerHTML = 'code: '    + error.code    + '\n' +
+                'message: ' + error.message + '\n' +
+                'watchID: ' + watchID;
+
+        if (watchID != null) {
+            navigator.geolocation.clearWatch(watchID);
+            watchID = null;
+        }
+        onDeviceReady();
+    }
+</script>
+</body>
+</html>
