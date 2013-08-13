@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='utf-8'?>
+<widget id="com.example.hello" version="0.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+    <name>Sweet Pea\'s</name>
+    <icon src="res/icon/android/icon-36-ldpi.png"/>
+    <icon src="res/icon/android/icon-36-ldpi.png" gap:platform="android" gap:density="ldpi"  />
+    <description>
+        A sample Apache Cordova application that responds to the deviceready event.
+    </description>
+    <access origin="*" />
+    <preference name="fullscreen" value="true" />
+    <preference name="webviewbounce" value="true" />
+    <preference name="loadingDialog" value="true" />
+    <feature name="Geolocation">
+        <param name="android-package" value="org.apache.cordova.GeoBroker" />
+    </feature>
+</widget>
